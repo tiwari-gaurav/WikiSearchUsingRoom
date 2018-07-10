@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         mPageAdapter = new PageAdapter( R.layout.news_list_item, this);
         mPagesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mPagesRecyclerView.setAdapter(mPageAdapter );
+        MainActivity.this.mPagesRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
         MainViewModelFactory factory = InjectorUtils.provideMainActivityViewModelFactory(this.getApplicationContext(),query);
         mWikiPageViewModel = ViewModelProviders.of(this, factory).get(WikiPageViewModel.class);
         mWikiPageViewModel.getPagesWiki().observe(this, new Observer<List<PageEntity>>() {
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(@Nullable List<PageEntity> pageEntity) {
                 if(pageEntity!=null) {
                     mPageAdapter.swapVideos(pageEntity);
-                    Toast.makeText(MainActivity.this, pageEntity.toString(), Toast.LENGTH_LONG).show();
+                   // Toast.makeText(MainActivity.this, pageEntity.toString(), Toast.LENGTH_LONG).show();
                     success=true;
                 }else{
                     success=false;

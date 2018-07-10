@@ -1,7 +1,10 @@
 package wiki.com.wikisearch.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +18,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import wiki.com.wikisearch.R;
 import wiki.com.wikisearch.room.PageEntity;
+import wiki.com.wikisearch.utils.Utils;
 
 class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageAdapterViewHolder>implements Filterable {
 
@@ -27,6 +33,7 @@ class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageAdapterViewHolder
     private int rowLayout;
     private List<PageEntity> mPages,mFilteredPageList,unFilteredList;
     boolean isFilterActive = false;
+    URL url,domain;
 
     public PageAdapter( int rowLayout, Context context) {
         this.rowLayout = rowLayout;
@@ -59,6 +66,7 @@ class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageAdapterViewHolder
             Glide.with(mContext).load(mPages.get(position).getThumbnail()).placeholder(R.drawable.profile_icon).into(holder.thumbnailImage);
         }*/
     }
+        applyClickEvents(holder, position);
     }
 
     @Override
@@ -152,5 +160,57 @@ class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageAdapterViewHolder
 
 
         notifyDataSetChanged();
+    }
+
+    private void applyClickEvents(final PageAdapterViewHolder holder, final int position) {
+
+
+        holder.title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(context, news.get(position).getUrl() + " is selected!", Toast.LENGTH_SHORT).show();
+
+                openWiki(position,view);
+
+
+            }
+        });
+
+
+        holder.description.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(context, news.get(position).getUrl() + " is selected!", Toast.LENGTH_SHORT).show();
+                openWiki(position,view);
+
+
+            }
+        });
+
+
+    }
+
+    private void openWiki(int position, View view) {
+        if(Utils.isNetworkAvailable(mContext)){
+            if(mPages.get(position).getTitle()!=null) {
+                try {
+                    domain = new URL("http://en.wikipedia.org/wiki/");
+                    url = new URL(domain,mPages.get(position).getTitle());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent(mContext, WbViewActivity.class);
+                intent.putExtra("url_to_web",  url.toString());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
+            }
+        }
+        else {
+            Snackbar snackbar = Snackbar
+                    .make(view, "Please check your internet connection", Snackbar.LENGTH_LONG);
+            snackbar.getView().setBackgroundColor(ContextCompat.getColor(mContext,R.color.new_pink));
+            snackbar.show();
+        }
+
     }
 }
