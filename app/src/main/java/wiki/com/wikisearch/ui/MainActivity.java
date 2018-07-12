@@ -24,13 +24,24 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mPagesRecyclerView;
     private PageAdapter mPageAdapter;
     private WikiPageViewModel mWikiPageViewModel;
-    private MainViewModelFactory mMainViewModelFactory;
     boolean success = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initViews();
+        //fetchPages("");
+    }
+
+    private void initViews() {
+        MainViewModelFactory factory = InjectorUtils.provideMainActivityViewModelFactory(this.getApplicationContext());
+        mWikiPageViewModel = ViewModelProviders.of(this, factory).get(WikiPageViewModel.class);
         mPagesRecyclerView = (RecyclerView)findViewById(R.id.page_recycle);
+        mPageAdapter = new PageAdapter( R.layout.news_list_item, this);
+        mPagesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mPagesRecyclerView.setAdapter(mPageAdapter );
+        MainActivity.this.mPagesRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
     }
 
     @Override
@@ -47,10 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 searchView.setQuery("", false);
                 searchView.setIconified(true);
                 searchItem.collapseActionView();
-                if(success) {
-                    mPageAdapter.getFilter().filter(query);
-                    return true;
-                }
+
                 return true;
             }
 
@@ -68,16 +76,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchPages(String query) {
-        mPageAdapter = new PageAdapter( R.layout.news_list_item, this);
-        mPagesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mPagesRecyclerView.setAdapter(mPageAdapter );
-        MainActivity.this.mPagesRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
-        MainViewModelFactory factory = InjectorUtils.provideMainActivityViewModelFactory(this.getApplicationContext(),query);
-        mWikiPageViewModel = ViewModelProviders.of(this, factory).get(WikiPageViewModel.class);
+
+
+        mWikiPageViewModel.setFilter(query);
         mWikiPageViewModel.getPagesWiki().observe(this, new Observer<List<PageEntity>>() {
             @Override
             public void onChanged(@Nullable List<PageEntity> pageEntity) {
                 if(pageEntity!=null) {
+
                     mPageAdapter.swapVideos(pageEntity);
                    // Toast.makeText(MainActivity.this, pageEntity.toString(), Toast.LENGTH_LONG).show();
                     success=true;

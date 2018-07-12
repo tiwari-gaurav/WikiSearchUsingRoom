@@ -2,7 +2,7 @@ package wiki.com.wikisearch.room;
 
 import android.arch.persistence.room.Ignore;
 
-class Thumbnail {
+public class Thumbnail {
 
     private String source;
     private int width,height;

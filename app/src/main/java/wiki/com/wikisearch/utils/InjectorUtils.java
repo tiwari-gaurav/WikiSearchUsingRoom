@@ -31,8 +31,8 @@ public class InjectorUtils {
 
 
 
-    public static MainViewModelFactory provideMainActivityViewModelFactory(Context context,String query) {
+    public static MainViewModelFactory provideMainActivityViewModelFactory(Context context) {
         WikiRepository repository = provideRepository(context.getApplicationContext());
-        return new MainViewModelFactory(repository,query);
+        return new MainViewModelFactory(repository);
     }
 }

@@ -4,7 +4,7 @@ import android.arch.persistence.room.Ignore;
 
 import java.util.ArrayList;
 
-class Terms {
+public class Terms {
     public ArrayList<String>description = new ArrayList<String>();
 
     @Ignore

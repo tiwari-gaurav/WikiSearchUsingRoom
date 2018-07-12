@@ -51,20 +51,20 @@ class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageAdapterViewHolder
 
     if(isFilterActive){
         if(mFilteredPageList.get(position).getTerms()!=null && mFilteredPageList.get(position).getTitle()!=null ) {
-            holder.description.setText(mFilteredPageList.get(position).getTitle());
+            holder.description.setText(mFilteredPageList.get(position).getTerms().description.get(0));
             holder.title.setText(mFilteredPageList.get(position).getTitle());
         }
-       /* if( mFilteredPageList.get(position).getThumbnail()!=null){
-            Glide.with(mContext).load(mFilteredPageList.get(position).getThumbnail()).placeholder(R.drawable.profile_icon).into(holder.thumbnailImage);
-        }*/
+        if( mFilteredPageList.get(position).getThumbnail()!=null){
+            Glide.with(mContext).load(mFilteredPageList.get(position).getThumbnail().getSource()).placeholder(R.drawable.profile_icon).into(holder.thumbnailImage);
+        }
     }else{
         if(mPages.get(position).getTerms()!=null && mPages.get(position).getTitle()!=null ) {
-            holder.description.setText(mPages.get(position).getTitle());
+            holder.description.setText(mPages.get(position).getTerms().description.get(0));
             holder.title.setText(mPages.get(position).getTitle());
         }
-       /* if( mPages.get(position).getThumbnail()!=null){
-            Glide.with(mContext).load(mPages.get(position).getThumbnail()).placeholder(R.drawable.profile_icon).into(holder.thumbnailImage);
-        }*/
+        if( mPages.get(position).getThumbnail()!=null){
+           Glide.with(mContext).load(mPages.get(position).getThumbnail().getSource()).placeholder(R.drawable.profile_icon).into(holder.thumbnailImage);
+        }
     }
         applyClickEvents(holder, position);
     }
@@ -103,10 +103,13 @@ class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageAdapterViewHolder
                     }
 
                     mFilteredPageList = filteredList;
+                    isFilterActive = true;
                 }
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = mFilteredPageList;
+
                 return filterResults;
+
             }
 
             @Override
@@ -117,7 +120,6 @@ class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageAdapterViewHolder
                 else {
                     mFilteredPageList = (List<PageEntity>) filterResults.values;
                 }
-                isFilterActive = true;
                 notifyDataSetChanged();
 
             }
@@ -151,14 +153,12 @@ class PageAdapter extends RecyclerView.Adapter<PageAdapter.PageAdapterViewHolder
         }
     }
 
-    void swapVideos(final List<PageEntity> pages) {
+   public void swapVideos(final List<PageEntity> pages) {
         // If there was no forecast data, then recreate all of the list
 
         mPages = pages;
         mFilteredPageList=pages;
-
-
-
+        unFilteredList=pages;
         notifyDataSetChanged();
     }
 

@@ -8,6 +8,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import wiki.com.wikisearch.R;
+import wiki.com.wikisearch.utils.Utils;
 
 /**
  * Created by gaurav on 12/9/17.
@@ -26,12 +27,14 @@ public class WbViewActivity extends Activity {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new Callback());
         webView.loadUrl(getIntent().getStringExtra("url_to_web"));
+
     }
 
 
     private class Callback extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+
             return (false);
         }
     }
